@@ -13,9 +13,9 @@ A Flask-based backend service for the Smart Closet application that provides clo
 
 ## Prerequisites
 
-- Python 3.8+
-- MongoDB running locally
-- pip (Python package manager)
+- Python 3.9+
+- MongoDB Atlas account
+- Docker (optional for containerization)
 
 ## Installation
 
@@ -30,24 +30,48 @@ cd smart-closet-backend
 pip install -r requirements.txt
 ```
 
-3. Set up MongoDB:
-- Install MongoDB if not already installed
-- Start MongoDB service locally
-- The application will connect to `mongodb://localhost:27017/` by default
-
-4. Create a `.env` file in the root directory with your configuration:
+3. Set up MongoDB Atlas:
+- Create a MongoDB Atlas account and set up a free cluster
+- Add your IP to the network access list
+- Create a database user with the necessary permissions
+- Obtain the connection string and update your `.env` file:
 ```env
-MONGODB_URI=mongodb://localhost:27017/
+MONGODB_URI=mongodb+srv://<username>:<password>@<cluster-url>/<database-name>?retryWrites=true&w=majority
 ```
 
-## Running the Application
+## Running the Application Locally
 
-Start the Flask server:
+To run the application locally without Docker:
+
+1. Ensure your virtual environment is activated:
+```bash
+source venv/bin/activate  # On macOS/Linux
+venv\Scripts\activate  # On Windows
+```
+
+2. Start the Flask server:
+```bash
+flask run --host=0.0.0.0 --port=5000
+```
+
+The server will start on `http://localhost:5000` in development mode.
+
+Alternatively, you can start the Flask server using Python:
 ```bash
 python app.py
 ```
 
-The server will start on `http://localhost:5000` in debug mode.
+## Docker Setup
+
+1. Build the Docker image:
+```bash
+docker build -t smart-closet-backend .
+```
+
+2. Run the Docker container:
+```bash
+docker run -d -p 80:80 -e MONGODB_URI="your_mongodb_uri" --name smart-closet-backend smart-closet-backend
+```
 
 ## API Endpoints
 
@@ -119,15 +143,10 @@ All models are hosted on Hugging Face Hub: [tnalla/smart-closet](https://hugging
 import requests
 
 # Predict sleeve length
-url = 'http://localhost:5000/predict/sleeve-length'
+url = 'http://localhost:80/predict/sleeve-length'
 files = {'image': open('shirt.jpg', 'rb')}
 response = requests.post(url, files=files)
 print(response.json())
-```
-
-### cURL Example
-```bash
-curl -X POST -F "image=@shirt.jpg" http://localhost:5000/predict/sleeve-length
 ```
 
 ## Error Handling
