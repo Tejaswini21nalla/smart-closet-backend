@@ -11,6 +11,9 @@ RUN apt-get update && apt-get install -y \
     python3-distutils \
     && rm -rf /var/lib/apt/lists/*
 
+# Install setuptools and wheel to support building
+RUN pip install --upgrade pip setuptools wheel
+
 # Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
