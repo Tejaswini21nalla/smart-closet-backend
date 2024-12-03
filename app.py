@@ -13,6 +13,7 @@ import os
 from dotenv import load_dotenv
 import tensorflow as tf
 import numpy as np
+from huggingface_hub import hf_hub_download
 
 # Load environment variables
 load_dotenv()
@@ -26,21 +27,35 @@ client = MongoClient('mongodb://localhost:27017/')
 db = client['smart_closet']
 predictions_collection = db['predictions']
 
-
 # Model Loading
-def load_model(model_path, num_classes):
+def load_model(repo_id, filename, num_classes):
     """
-    Loading the pre-trained model and modifying the final layer to match the number of classes.
+    Loading the pre-trained model from Hugging Face Hub and modifying the final layer to match the number of classes.
     """
-    resnet_model = models.resnet50(weights=None)
-    resnet_model.fc = nn.Linear(resnet_model.fc.in_features, num_classes)
-    resnet_model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
-    resnet_model.eval()
-    return resnet_model
+    try:
+        # Download the model file from Hugging Face Hub
+        model_path = hf_hub_download(repo_id=repo_id, filename=filename)
+        
+        # Initialize the model architecture
+        resnet_model = models.resnet50(weights=None)
+        resnet_model.fc = nn.Linear(resnet_model.fc.in_features, num_classes)
+        
+        # Load the state dict
+        resnet_model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
+        resnet_model.eval()
+        return resnet_model
+    except Exception as e:
+        print(f"Error loading model {filename}: {str(e)}")
+        return None
 
-
-# Load Tensorflow model
-tf_model = tf.keras.models.load_model('multi_attribute_classifier.h5')
+# Load Tensorflow model from Hugging Face Hub
+def load_tf_model(repo_id, filename):
+    try:
+        model_path = hf_hub_download(repo_id=repo_id, filename=filename)
+        return tf.keras.models.load_model(model_path)
+    except Exception as e:
+        print(f"Error loading TF model {filename}: {str(e)}")
+        return None
 
 # Define attribute names and class mappings
 attribute_names = ["hat", "neckwear", "outer_clothing_cardigan", "upper_clothing_covering_navel"]
@@ -51,16 +66,21 @@ class_mappings = {
     "upper_clothing_covering_navel": {0: "no", 1: "yes", 2: "NA"},
 }
 
-# Loading the model
-MODEL_PATH = 'sleeve_model_10.pth'
-model = load_model(MODEL_PATH, 4)
+# Loading the models from Hugging Face Hub
+REPO_ID = "tnalla/smart-closet"
 
-COLLAR_MODEL_PATH = 'collar_model_10.pth'
-collar_model = load_model(COLLAR_MODEL_PATH, 7)
+# Load PyTorch models
+model = load_model(REPO_ID, "sleeve_model_10.pth", 4)
+collar_model = load_model(REPO_ID, "collar_model_10.pth", 7)
+lower_length_model = load_model(REPO_ID, "lower_clothing_model_10.pth", 5)
 
-LOWER_LENGTH_MODEL_PATH = 'lower_clothing_model_10.pth'
-lower_length_model = load_model(LOWER_LENGTH_MODEL_PATH, 5)
+# Load TensorFlow model
+tf_model = load_tf_model(REPO_ID, "multi_attribute_classifier.h5")
 
+# Define class labels
+class_labels = {0: "sleeveless", 1: "short-sleeve", 2: "medium-sleeve", 3: "long-sleeve"}
+collar_class_labels = {0: "V-shape", 1: "square", 2: "round", 3: "standing", 4: "lapel", 5: "suspenders", 6: "NA"}
+lower_clothing_length_labels = {0: "three-point", 1: "medium short", 2: "three-quarter", 3: "long", 4: "NA"}
 
 # Image Preprocessing
 def preprocess_image(image_bytes):
@@ -75,7 +95,6 @@ def preprocess_image(image_bytes):
     image = Image.open(io.BytesIO(image_bytes))
     return preprocess(image).unsqueeze(0)
 
-
 # Image Preprocessing for TensorFlow model
 def preprocess_image_tf(image_bytes):
     """
@@ -87,7 +106,6 @@ def preprocess_image_tf(image_bytes):
     image_array = np.expand_dims(image_array, axis=0)
     return image_array
 
-
 # Prediction
 def predict_class(image_tensor, model, class_labels):
     """
@@ -97,7 +115,6 @@ def predict_class(image_tensor, model, class_labels):
         output = model(image_tensor)
         _, predicted_class = torch.max(output, 1)
     return class_labels[predicted_class.item()]
-
 
 # Prediction function for TensorFlow model
 def predict_attributes(image_array):
@@ -126,13 +143,6 @@ def predict_attributes(image_array):
         results[attr_name] = prediction
 
     return results
-
-
-# Define class labels
-class_labels = {0: "sleeveless", 1: "short-sleeve", 2: "medium-sleeve", 3: "long-sleeve"}
-collar_class_labels = {0: "V-shape", 1: "square", 2: "round", 3: "standing", 4: "lapel", 5: "suspenders", 6: "NA"}
-lower_clothing_length_labels = {0: "three-point", 1: "medium short", 2: "three-quarter", 3: "long", 4: "NA"}
-
 
 # API Route
 @app.route('/predict/sleeve-length', methods=['POST'])
