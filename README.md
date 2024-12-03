@@ -105,12 +105,12 @@ The application uses multiple deep learning models for classification:
 ### Multi-Attribute Classifier
 - TensorFlow-based model for detecting multiple attributes simultaneously
 - Attributes detected:
-  - Hat presence (no hat, yes hat, NA)
-  - Neckwear presence (no neckwear, yes neckwear, NA)
-  - Cardigan presence (yes cardigan, no cardigan, NA)
-  - Navel coverage (no, yes, NA)
+  - Hat presence (no hat, yes hat)
+  - Neckwear presence (no neckwear, yes neckwear)
+  - Cardigan presence (yes cardigan, no cardigan)
+  - Navel coverage (no, yes)
 
-All models are hosted on Hugging Face Hub under the repository "tnalla/smart-closet".
+All models are hosted on Hugging Face Hub: [tnalla/smart-closet](https://huggingface.co/tnalla/smart-closet/tree/main)
 
 ## Example Usage
 
@@ -146,11 +146,3 @@ The application is built with:
 - PyTorch for deep learning models
 - MongoDB for data storage
 - Hugging Face Hub for model hosting
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
