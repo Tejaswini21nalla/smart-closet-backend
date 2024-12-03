@@ -49,7 +49,15 @@ source venv/bin/activate  # On macOS/Linux
 venv\Scripts\activate  # On Windows
 ```
 
-2. Start the Flask server:
+2. Set up MongoDB:
+- Ensure MongoDB is installed and running locally.
+- By default, the application connects to `mongodb://localhost:27017/`.
+- If needed, update the `.env` file with your local MongoDB URI:
+```env
+MONGODB_URI=mongodb://localhost:27017/your_database_name
+```
+
+3. Start the Flask server:
 ```bash
 flask run --host=0.0.0.0 --port=5000
 ```
