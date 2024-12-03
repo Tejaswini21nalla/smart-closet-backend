@@ -4,9 +4,11 @@ FROM python:3.12-slim as builder
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+# Install system dependencies including distutils
+RUN apt-get update && apt-get install -y \
     build-essential \
+    python3-dev \
+    python3-distutils \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
