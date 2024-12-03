@@ -69,6 +69,14 @@ Alternatively, you can start the Flask server using Python:
 python app.py
 ```
 
+## Dataset
+
+The models used in this application are trained on the DeepFashion dataset, which is a large-scale clothes database containing diverse fashion images. This dataset is widely used in research for tasks such as clothing attribute prediction, fashion item retrieval, and more.
+
+The DeepFashion dataset is provided by MMLab@NTU, affiliated with S-Lab, Nanyang Technological University, and SenseTime Research.
+
+For more information about the dataset, you can visit the [DeepFashion-MultiModal GitHub repository](https://github.com/yumingj/DeepFashion-MultiModal).
+
 ## Docker Setup
 
 1. Build the Docker image:
