@@ -5,7 +5,7 @@ FROM python:3.9-alpine as builder
 WORKDIR /app
 
 # Install system dependencies
-RUN apk add --no-cache --virtual .build-deps build-base python3-dev python3-setuptools
+RUN apk add --no-cache --virtual .build-deps build-base python3-dev
 
 # Install Python dependencies
 COPY requirements.txt .
