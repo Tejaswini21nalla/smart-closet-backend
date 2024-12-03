@@ -1,23 +1,18 @@
-# Use Python 3.9 slim as base image
-FROM python:3.9-slim as builder
+# Use Python 3.9 Alpine for a smaller image
+FROM python:3.9-alpine as builder
 
 # Set working directory
 WORKDIR /app
 
-# Install system dependencies including distutils
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    python3-dev \
-    python3-distutils \
-    && rm -rf /var/lib/apt/lists/*
+# Install system dependencies
+RUN apk add --no-cache --virtual .build-deps build-essential python3-dev python3-distutils
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt \
-    && rm -rf /root/.cache  # Clean pip cache
+RUN pip install --no-cache-dir -r requirements.txt
 
 # Second stage: Runtime
-FROM python:3.9-slim
+FROM python:3.9-alpine
 
 # Set working directory
 WORKDIR /app
@@ -35,16 +30,8 @@ ENV FLASK_APP=app.py
 ENV FLASK_ENV=production
 ENV PORT=80
 
-# Create a non-root user
-RUN useradd -m appuser && chown -R appuser:appuser /app
-USER appuser
-
 # Expose port
 EXPOSE 80
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:80/ || exit 1
 
 # Run the application with gunicorn
 CMD ["gunicorn", "--bind", "0.0.0.0:80", "--workers", "2", "--timeout", "120", "app:app"]
