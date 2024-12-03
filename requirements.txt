@@ -4,7 +4,7 @@ flask-cors==4.0.0
 gunicorn==21.2.0
 
 # Machine Learning
-torch==2.2.0
+torch==2.2.2
 torchvision==0.17.2
 
 tensorflow>=2.13.0
