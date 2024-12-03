@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
 
 # Install Python dependencies
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt \
+    && rm -rf /root/.cache  # Clean pip cache
 
 # Second stage: Runtime
 FROM python:3.9-slim
