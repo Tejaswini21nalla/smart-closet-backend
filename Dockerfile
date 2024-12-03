@@ -1,5 +1,5 @@
-# Use Python 3.12 slim as base image
-FROM python:3.12-slim as builder
+# Use Python 3.9 slim as base image
+FROM python:3.9-slim as builder
 
 # Set working directory
 WORKDIR /app
@@ -11,21 +11,18 @@ RUN apt-get update && apt-get install -y \
     python3-distutils \
     && rm -rf /var/lib/apt/lists/*
 
-# Install setuptools and wheel to support building
-RUN pip install --upgrade pip setuptools wheel
-
 # Install Python dependencies
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Second stage: Runtime
-FROM python:3.12-slim
+FROM python:3.9-slim
 
 # Set working directory
 WORKDIR /app
 
 # Copy only necessary files from builder
-COPY --from=builder /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
+COPY --from=builder /usr/local/lib/python3.9/site-packages/ /usr/local/lib/python3.9/site-packages/
 COPY --from=builder /usr/local/bin/ /usr/local/bin/
 
 # Copy application code
