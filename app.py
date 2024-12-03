@@ -23,9 +23,53 @@ app = Flask(__name__)
 CORS(app)
 
 # Initialize MongoDB
-client = MongoClient('mongodb://localhost:27017/')
-db = client['smart_closet']
-predictions_collection = db['predictions']
+MONGODB_URI = os.getenv('MONGODB_URI', 'mongodb+srv://smart_closet:SmartCloset21@smart-closet.lxaze.mongodb.net/?retryWrites=true&w=majority&appName=smart-closet')
+try:
+    client = MongoClient(MONGODB_URI, serverSelectionTimeoutMS=5000)
+    client.admin.command('ping')
+    print("Successfully connected to MongoDB Atlas!")
+    
+    # Verify database and collection
+    db = client['smart_closet']
+    collections = db.list_collection_names()
+    
+    if 'predictions' not in collections:
+        # Create predictions collection with validation
+        db.create_collection('predictions')
+        db.command({
+            'collMod': 'predictions',
+            'validator': {
+                '$jsonSchema': {
+                    'bsonType': 'object',
+                    'required': ['filename', 'image', 'predictions', 'timestamp'],
+                    'properties': {
+                        'filename': {'bsonType': 'string'},
+                        'image': {'bsonType': 'string'},
+                        'predictions': {'bsonType': 'object'},
+                        'timestamp': {'bsonType': 'date'}
+                    }
+                }
+            }
+        })
+        print("Created 'predictions' collection with schema validation")
+    else:
+        print("Found existing 'predictions' collection")
+    
+    # Create indexes for better query performance
+    predictions_collection = db['predictions']
+    predictions_collection.create_index([('timestamp', -1)])
+    predictions_collection.create_index([('predictions.sleeve_length', 1)])
+    predictions_collection.create_index([('predictions.collar_type', 1)])
+    predictions_collection.create_index([('predictions.lower_length', 1)])
+    
+    # Print collection stats
+    stats = db.command('collstats', 'predictions')
+    print(f"Collection size: {stats['size']} bytes")
+    print(f"Number of documents: {stats['count']}")
+    
+except Exception as e:
+    print(f"Error connecting to MongoDB Atlas: {e}")
+    raise e
 
 # Model Loading
 def load_model(repo_id, filename, num_classes):
@@ -355,18 +399,29 @@ def save_prediction():
             'timestamp': datetime.utcnow()
         }
 
-        # Store in MongoDB
-        result = predictions_collection.insert_one(prediction_doc)
+        # Store in MongoDB with write concern for confirmation
+        result = predictions_collection.insert_one(prediction_doc, write_concern={"w": "majority"})
+        
+        # Verify insertion
+        inserted_doc = predictions_collection.find_one({'_id': result.inserted_id})
+        if not inserted_doc:
+            raise Exception("Failed to verify document insertion")
+            
+        print(f"Successfully saved prediction for {file.filename}")
+        print(f"Document ID: {result.inserted_id}")
+        print(f"Predictions: {all_predictions}")
 
         # Return success response
         return jsonify({
             'success': True,
             'message': 'Item saved successfully',
             'filename': file.filename,
-            'predictions': all_predictions
+            'predictions': all_predictions,
+            'document_id': str(result.inserted_id)
         })
 
     except Exception as e:
+        print(f"Error saving prediction: {str(e)}")
         return jsonify({
             'success': False,
             'error': str(e)
