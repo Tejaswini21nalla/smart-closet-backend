@@ -91,49 +91,31 @@ docker run -d -p 80:80 -e MONGODB_URI="your_mongodb_uri" --name smart-closet-bac
 
 ## API Endpoints
 
-### 1. Predict Sleeve Length
-- **Endpoint**: `/predict/sleeve-length`
-- **Method**: POST
-- **Input**: Form data with 'image' field containing the image file
-- **Returns**: Sleeve length classification (sleeveless, short-sleeve, medium-sleeve, long-sleeve)
-
-### 2. Predict Collar Type
-- **Endpoint**: `/predict/collar-type`
-- **Method**: POST
-- **Input**: Form data with 'image' field
-- **Returns**: Collar type classification (V-shape, square, round, standing, lapel, suspenders)
-
-### 3. Predict Lower Clothing Length
-- **Endpoint**: `/predict/lower-length`
-- **Method**: POST
-- **Input**: Form data with 'image' field
-- **Returns**: Lower clothing length classification (three-point, medium short, three-quarter, long)
-
-### 4. Predict All Attributes
+### 1. Predict All Attributes
 - **Endpoint**: `/predict/both`
 - **Method**: POST
 - **Input**: Form data with 'image' field
 - **Returns**: All clothing attributes including sleeve length, collar type, and lower clothing length
 
-### 5. Save Prediction
+### 2. Save Prediction
 - **Endpoint**: `/save-prediction`
 - **Method**: POST
 - **Input**: Form data with 'image' field
 - **Returns**: Saved prediction ID and all clothing attributes
 - **Description**: Saves the image and its predictions to MongoDB
 
-### 6. Get All Items
+### 3. Get All Items
 - **Endpoint**: `/items`
 - **Method**: GET
 - **Returns**: List of all saved items with their predictions
 
-### 7. Get Recommendations
+### 4. Get Recommendations
 - **Endpoint**: `/recommend`
 - **Method**: POST
 - **Input**: JSON with desired attributes
 - **Returns**: Top 3 matching items from the database
 
-### 8. Recommend Items with Similarity Measures
+### 5. Recommend Items with Similarity Measures
 - **Endpoint**: `/recommend/similarity`
 - **Method**: POST
 - **Input**: JSON object with desired attributes
@@ -207,8 +189,8 @@ All models are hosted on Hugging Face Hub: [tnalla/smart-closet](https://hugging
 ```python
 import requests
 
-# Predict sleeve length
-url = 'http://localhost:80/predict/sleeve-length'
+# Predict all attributes
+url = 'http://localhost:80/predict/both'
 files = {'image': open('shirt.jpg', 'rb')}
 response = requests.post(url, files=files)
 print(response.json())
