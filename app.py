@@ -400,7 +400,7 @@ def save_prediction():
         }
 
         # Store in MongoDB with write concern for confirmation
-        result = predictions_collection.insert_one(prediction_doc, write_concern={"w": "majority"})
+        result = predictions_collection.insert_one(prediction_doc)
         
         # Verify insertion
         inserted_doc = predictions_collection.find_one({'_id': result.inserted_id})
@@ -559,6 +559,94 @@ def recommend_items():
         }), 500
 
 
+@app.route('/recommend/similarity', methods=['POST'])
+def recommend_similarity():
+    """
+    API endpoint to recommend items based on multiple similarity measures.
+    """
+    try:
+        # Get attributes from request
+        attributes = request.json
+        if not attributes:
+            return jsonify({
+                'success': False,
+                'error': 'No attributes provided'
+            }), 400
+
+        required_attributes = [
+            'collar_type', 'hat', 'lower_length', 'neckwear',
+            'outer_clothing_cardigan', 'sleeve_length', 'upper_clothing_covering_navel'
+        ]
+
+        # Validate all required attributes are present
+        missing_attrs = [attr for attr in required_attributes if attr not in attributes]
+        if missing_attrs:
+            return jsonify({
+                'success': False,
+                'error': f'Missing required attributes: {", ".join(missing_attrs)}'
+            }), 400
+
+        # Convert attributes to numerical values for similarity calculations
+        attribute_mapping = {
+            'collar_type': {'V-shape': 0, 'round': 1, 'square': 2, 'standing': 3, 'lapel': 4, 'suspenders': 5, 'NA': 6},
+            'hat': {'no hat': 0, 'yes hat': 1, 'NA': 2},
+            'neckwear': {'no neckwear': 0, 'yes neckwear': 1, 'NA': 2},
+            'outer_clothing_cardigan': {'yes cardigan': 0, 'no cardigan': 1, 'NA': 2},
+            'upper_clothing_covering_navel': {'no': 0, 'yes': 1, 'NA': 2},
+            'lower_length': {'three-point': 0, 'medium short': 1, 'three-quarter': 2, 'long': 3, 'NA': 4},
+            'sleeve_length': {'sleeveless': 0, 'short-sleeve': 1, 'medium-sleeve': 2, 'long-sleeve': 3, 'NA': 4}
+        }
+
+        def convert_to_vector(attrs):
+            return [attribute_mapping[attr][value] for attr, value in attrs.items()]
+
+        user_vector = convert_to_vector(attributes)
+
+        # Function to calculate cosine similarity
+        def cosine_similarity(v1, v2):
+            dot_product = sum(a * b for a, b in zip(v1, v2))
+            magnitude1 = sum(a ** 2 for a in v1) ** 0.5
+            magnitude2 = sum(b ** 2 for b in v2) ** 0.5
+            return dot_product / (magnitude1 * magnitude2) if magnitude1 and magnitude2 else 0
+
+        # Function to calculate Jaccard similarity
+        def jaccard_similarity(v1, v2):
+            intersection = sum(1 for a, b in zip(v1, v2) if a == b)
+            union = len(v1)
+            return intersection / union
+
+        # Function to calculate Hamming distance
+        def hamming_distance(v1, v2):
+            return sum(1 for a, b in zip(v1, v2) if a != b)
+
+        # Retrieve all items from the database
+        all_items = list(predictions_collection.find({}, {'_id': 0, 'filename': 1, 'predictions': 1}))
+
+        # Calculate similarities for each item
+        for item in all_items:
+            item_vector = convert_to_vector(item['predictions'])
+            item['cosine_similarity'] = cosine_similarity(user_vector, item_vector)
+            item['jaccard_similarity'] = jaccard_similarity(user_vector, item_vector)
+            item['hamming_distance'] = hamming_distance(user_vector, item_vector)
+
+        # Sort items by highest similarity (lowest Hamming distance)
+        sorted_items = sorted(all_items, key=lambda x: (-x['cosine_similarity'], -x['jaccard_similarity'], x['hamming_distance']))
+
+        # Return top 3 items
+        recommendations = sorted_items[:3]
+
+        return jsonify({
+            'success': True,
+            'count': len(recommendations),
+            'recommendations': recommendations
+        })
+
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 if __name__ == '__main__':
-    port = int(os.getenv('PORT', 80))
-    app.run(host='0.0.0.0', port=port, debug=False)
+    app.run(debug=True)

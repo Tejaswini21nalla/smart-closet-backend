@@ -133,6 +133,55 @@ docker run -d -p 80:80 -e MONGODB_URI="your_mongodb_uri" --name smart-closet-bac
 - **Input**: JSON with desired attributes
 - **Returns**: Top 3 matching items from the database
 
+### 8. Recommend Items with Similarity Measures
+- **Endpoint**: `/recommend/similarity`
+- **Method**: POST
+- **Input**: JSON object with desired attributes
+- **Returns**: Top 3 items with the highest similarity scores based on multiple similarity measures
+
+This API endpoint calculates similarity scores using cosine similarity, Jaccard similarity, and Hamming distance for each item in the database. It ranks items by highest cosine and Jaccard similarity and lowest Hamming distance, returning the top 3 items with the best similarity scores.
+
+Example Request:
+```json
+{
+  "collar_type": "V-shape",
+  "hat": "yes hat",
+  "lower_length": "long",
+  "neckwear": "no neckwear",
+  "outer_clothing_cardigan": "no",
+  "sleeve_length": "long-sleeve",
+  "upper_clothing_covering_navel": "yes"
+}
+```
+
+Example Response:
+```json
+{
+  "success": true,
+  "count": 3,
+  "recommendations": [
+    {
+      "filename": "item1.jpg",
+      "image": "base64encodedimage",
+      "predictions": {
+        "collar_type": "V-shape",
+        "hat": "yes hat",
+        "lower_length": "long",
+        "neckwear": "no neckwear",
+        "outer_clothing_cardigan": "no",
+        "sleeve_length": "long-sleeve",
+        "upper_clothing_covering_navel": "yes"
+      },
+      "cosine_similarity": 0.95,
+      "jaccard_similarity": 0.85,
+      "hamming_distance": 1,
+      "timestamp": "2023-10-15T12:34:56"
+    },
+    ...
+  ]
+}
+```
+
 ## Model Information
 
 The application uses multiple deep learning models for classification:
