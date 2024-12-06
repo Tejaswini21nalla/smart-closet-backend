@@ -4,7 +4,6 @@ A Flask-based backend service for the Smart Closet application that provides clo
 
 ![Classification Overview](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-closet.png)
 
-![Mobile Classification Overview](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/mobile-closet.png)
 
 ## Features
 
@@ -21,7 +20,6 @@ This feature identifies and prevents duplicate entries in the database.
 ### 3. Recommendations Based on Attributes
 This feature recommends clothing items based on their attributes.
 
-![Recommendations](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/mobile-recommendation.png)
 ![Web Recommendation Example](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-recommendation.png)
 ![Web Recommendation Output](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-recommendation-output.png)
 
