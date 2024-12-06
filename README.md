@@ -9,7 +9,7 @@ A Flask-based backend service for the Smart Closet application that provides clo
 
 ### 1. Predictions - Classification
 This feature allows you to predict sleeve length, collar type, and lower clothing length from an image.
-
+![Prediction](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/prediction.png)
 
 
 ### 2. Duplicate Item Detection
