@@ -177,6 +177,12 @@ Example Response:
 }
 ```
 
+## UI Repository
+
+For the front-end of the Smart Closet application, please visit the following repository:
+
+[Smart Closet UI](https://github.com/Tejaswini21nalla/smart-closet-ui)
+
 ## Model Information
 
 The application uses multiple deep learning models for classification:
@@ -225,3 +231,12 @@ The application is built with:
 - PyTorch for deep learning models
 - MongoDB for data storage
 - Hugging Face Hub for model hosting
+
+## Future Goals
+
+There is a lot that we can improve in this area, including:
+- Enhancing model performance for better accuracy and speed.
+- Expanding the range of predictions from images to include more clothing attributes.
+- Developing functionality to identify individual clothing items within images.
+- Integrating with human pose estimation to provide more contextual recommendations.
+- Exploring augmented reality (AR) applications to visualize clothing items in real-time.
