@@ -23,15 +23,6 @@ This feature recommends clothing items based on their attributes.
 ![Web Recommendation Example](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-recommendation.png)
 ![Web Recommendation Output](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-recommendation-output.png)
 
-## Predictions
-This feature allows you to predict clothing attributes from images.
-
-## Duplicate Item Detection
-This feature identifies and prevents duplicate entries in the database.
-
-## Recommendations
-This feature recommends clothing items based on their attributes and user preferences.
-
 ## Prerequisites
 
 - Python 3.9+
