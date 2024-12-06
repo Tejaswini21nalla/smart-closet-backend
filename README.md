@@ -1,6 +1,7 @@
 # Smart Closet Backend
 
 A Flask-based backend service for the Smart Closet application that provides clothing attribute classification using deep learning models.
+![Web - Home](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-home.png) 
 
 ![Classification Overview](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-closet.png)
 
