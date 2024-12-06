@@ -5,7 +5,7 @@ In our fast-paced lives, choosing the right outfit can often feel overwhelming. 
 - **Wardrobe Overload**: A cluttered closet filled with items that go unworn makes it difficult to find suitable outfits, often resulting in frustration.
 - **Style Insecurity**: Many individuals struggle to coordinate clothing items, leading to uncertainty about what looks good together.
 
-To address these common problems, we developed the Smart Closet solution. This innovative application leverages advanced machine learning techniques to provide personalized clothing recommendations based on user preferences and wardrobe inventory. By simplifying the outfit selection process, the Smart Closet empowers users to make confident fashion choices effortlessly.
+To address these common problems, I developed the Smart Closet solution. This innovative application leverages advanced machine learning techniques to provide personalized clothing recommendations based on user preferences and wardrobe inventory. By simplifying the outfit selection process, the Smart Closet empowers users to make confident fashion choices effortlessly.
 
 The Smart Closet application provides clothing attribute classification using deep learning models.
 ![Web - Home](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-home.png) 
