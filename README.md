@@ -2,14 +2,37 @@
 
 A Flask-based backend service for the Smart Closet application that provides clothing attribute classification using deep learning models.
 
+![Classification Overview](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-closet.png)
+
+![Mobile Classification Overview](https://github.com/Tejaswini21nalla/smart-closet-backend/tree/main/media/mobile-closet.png)
+
 ## Features
 
-- Sleeve length classification
-- Collar type detection
-- Lower clothing length classification
-- Multi-attribute detection
-- Image storage and retrieval
-- Clothing recommendations based on attributes
+### 1. Predictions - Classification
+This feature allows you to predict sleeve length, collar type, and lower clothing length from an image.
+
+
+
+### 2. Duplicate Item Detection
+This feature identifies and prevents duplicate entries in the database.
+
+![Duplicate Item Detection](https://github.com/Tejaswini21nalla/smart-closet-backend/tree/main/media/duplicate-item.png)
+
+### 3. Recommendations Based on Attributes
+This feature recommends clothing items based on their attributes.
+
+![Recommendations](https://github.com/Tejaswini21nalla/smart-closet-backend/tree/main/media/mobile-recommendation.png)
+![Web Recommendation Example](https://github.com/Tejaswini21nalla/smart-closet-backend/tree/main/media/web-recommendation.png)
+![Web Recommendation Output](https://github.com/Tejaswini21nalla/smart-closet-backend/tree/main/media/web-recommendation-output.png)
+
+## Predictions
+This feature allows you to predict clothing attributes from images.
+
+## Duplicate Item Detection
+This feature identifies and prevents duplicate entries in the database.
+
+## Recommendations
+This feature recommends clothing items based on their attributes and user preferences.
 
 ## Prerequisites
 
