@@ -1,9 +1,42 @@
-# Smart Closet Backend
+# Smart Closet
 
-A Flask-based backend service for the Smart Closet application that provides clothing attribute classification using deep learning models.
+In our fast-paced lives, choosing the right outfit can often feel overwhelming. With countless clothing options available, many people face daily challenges such as:
+- **Time Constraints**: Busy schedules leave little time for outfit selection, leading to last-minute decisions that may not reflect personal style.
+- **Wardrobe Overload**: A cluttered closet filled with items that go unworn makes it difficult to find suitable outfits, often resulting in frustration.
+- **Style Insecurity**: Many individuals struggle to coordinate clothing items, leading to uncertainty about what looks good together.
+
+To address these common problems, we developed the Smart Closet solution. This innovative application leverages advanced machine learning techniques to provide personalized clothing recommendations based on user preferences and wardrobe inventory. By simplifying the outfit selection process, the Smart Closet empowers users to make confident fashion choices effortlessly.
+
+The Smart Closet application provides clothing attribute classification using deep learning models.
 ![Web - Home](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-home.png) 
 
 ![Classification Overview](https://github.com/Tejaswini21nalla/smart-closet-backend/blob/main/media/web-closet.png)
+
+
+## UI Repository
+
+For the front-end of the Smart Closet application, please visit the following repository:
+
+[Smart Closet UI](https://github.com/Tejaswini21nalla/smart-closet-ui)
+
+## Model Information
+
+The application uses multiple deep learning models for classification:
+
+### ResNet50-based Models
+- Sleeve length model: 4 classes (sleeveless, short-sleeve, medium-sleeve, long-sleeve)
+- Collar type model: 7 classes (V-shape, square, round, standing, lapel, suspenders)
+- Lower clothing length model: 5 classes (three-point, medium short, three-quarter, long)
+
+### Multi-Attribute Classifier
+- TensorFlow-based model for detecting multiple attributes simultaneously
+- Attributes detected:
+  - Hat presence (no hat, yes hat)
+  - Neckwear presence (no neckwear, yes neckwear)
+  - Cardigan presence (yes cardigan, no cardigan)
+  - Navel coverage (no, yes)
+
+All models are hosted on Hugging Face Hub: [tnalla/smart-closet](https://huggingface.co/tnalla/smart-closet/tree/main)
 
 
 ## Features
@@ -176,31 +209,6 @@ Example Response:
   ]
 }
 ```
-
-## UI Repository
-
-For the front-end of the Smart Closet application, please visit the following repository:
-
-[Smart Closet UI](https://github.com/Tejaswini21nalla/smart-closet-ui)
-
-## Model Information
-
-The application uses multiple deep learning models for classification:
-
-### ResNet50-based Models
-- Sleeve length model: 4 classes (sleeveless, short-sleeve, medium-sleeve, long-sleeve)
-- Collar type model: 7 classes (V-shape, square, round, standing, lapel, suspenders, NA)
-- Lower clothing length model: 5 classes (three-point, medium short, three-quarter, long, NA)
-
-### Multi-Attribute Classifier
-- TensorFlow-based model for detecting multiple attributes simultaneously
-- Attributes detected:
-  - Hat presence (no hat, yes hat)
-  - Neckwear presence (no neckwear, yes neckwear)
-  - Cardigan presence (yes cardigan, no cardigan)
-  - Navel coverage (no, yes)
-
-All models are hosted on Hugging Face Hub: [tnalla/smart-closet](https://huggingface.co/tnalla/smart-closet/tree/main)
 
 ## Example Usage
 
